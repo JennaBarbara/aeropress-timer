@@ -6,12 +6,24 @@ class Step extends Component {
   constructor(props) {
   super(props);
   this.state = {
+    currentMode: this.props.Mode,
     currenttime: this.props.Content[this.props.Mode-1][2]
   }
   this.tick = this.tick.bind(this);
 }
+   componentDidUpdate() {
+     if(this.state.currentMode !== this.props.Mode){
+       this.setState({currentMode:this.props.Mode,
+                      currenttime: this.props.Content[this.props.Mode-1][2]});
+       this.startTimer();
+     }
+   }
+
    componentDidMount() {
-     var timerInterval = setInterval(this.tick, 1000 );
+     this.startTimer();
+  }
+  startTimer(){
+    this.timerInterval = setInterval(this.tick, 1000 );
   }
   tick(){
    if(this.state.currenttime>0){
@@ -22,6 +34,7 @@ class Step extends Component {
    }
    else{
       clearInterval(this.timerInterval);
+      console.log("clearInterval");
    }
 
    }
@@ -36,7 +49,7 @@ class Step extends Component {
     <p>
      {this.props.Content[this.props.Mode-1][1]}
     </p>
-    <button onClick={this.props.nextMode} className="App-button">Next</button>
+    {(this.state.currenttime==0)? <button onClick={this.props.nextMode} className="App-button">Next</button> : null}
     <button onClick={this.props.Cancel} className="App-button">Cancel</button>
     </div>
   );
