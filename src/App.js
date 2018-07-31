@@ -39,16 +39,15 @@ class Step extends Component {
   render() {
     return( <div  className="App-infotext">
     <p>
-    <b>{this.state.currenttime}</b>
-    </p>
-    <p>
     <b>{this.props.Content[this.props.Mode-1][0]}</b>
     </p>
     <p>
      {this.props.Content[this.props.Mode-1][1]}
     </p>
-    {(this.state.currenttime==0)? <button onClick={this.props.nextMode} className="App-button">Next</button> : null}
     <button onClick={this.props.Cancel} className="App-button">Cancel</button>
+    {(this.state.currenttime>0)? <p className="App-timer">{this.state.currenttime}</p>: null}
+    {(this.state.currenttime==0)? <button onClick={this.props.nextMode} className="App-button">Next</button> : null}
+
     </div>
   );
 
@@ -100,7 +99,26 @@ class Info extends Component {
 
  }
 }
+class Edit extends Component {
+  render() {
+  return(
+    <form onSubmit={this.props.editTime}>
+    <label>{this.props.Content[0][0]} time (in seconds): </label>
+    <input type="number" name="0" min="0" value={this.props.newTime[0]} onChange={this.props.handleChange} className="App-input" /><br/>
+    <label>{this.props.Content[1][0]} time (in seconds): </label>
+    <input type="number" name="1" min="0" value={this.props.newTime[1]}  onChange={this.props.handleChange} className="App-input" /><br/>
+    <label>{this.props.Content[3][0]} time (in seconds): </label>
+    <input type="number" name="3" min="0" value={this.props.newTime[3]}  onChange={this.props.handleChange} className="App-input" /><br/><br/>
+    <button onClick={this.props.cancelEdit} type="button" className="App-button">Cancel</button>
+    <input type="submit" value="Save" className="App-button"/>
 
+    </form>
+
+  )
+}
+
+
+}
 class App extends Component {
 
   constructor(props) {
@@ -120,7 +138,7 @@ class App extends Component {
            "Firmly press down the plunger. You should take up the time remaining time on the timer before you hear the gentle hiss sound and you know your coffee is ready.",
            20],
           ["Done",
-          "Your coffee is done, have a nice rest of your day."]
+          "Your coffee is done, have a nice rest of your day.",0]
       ],
       newTime : [ 20, 60,0, 20],
       mode: 0
@@ -128,10 +146,12 @@ class App extends Component {
   this.nextMode = this.nextMode.bind(this);
   this.editMode = this.editMode.bind(this);
   this.editTime = this.editTime.bind(this);
+  this.cancelEdit = this.cancelEdit.bind(this);
   this.Cancel = this.Cancel.bind(this);
    this.handleChange = this.handleChange.bind(this);
   }
   handleChange(event) {
+    console.log("handleChange");
     var changeHandler = Object.assign({}, this.state.newTime);
     changeHandler[[event.target.name]] = event.target.value;
     this.setState({newTime : changeHandler});
@@ -166,14 +186,26 @@ class App extends Component {
      }
    }
   editTime() {
+    console.log("editTime");
     var newContent = Object.assign({}, this.state.content);
     newContent[0][2] = this.state.newTime[0];
     newContent[1][2] = this.state.newTime[1];
-    newContent[2][2] = this.state.newTime[2];
+//    newContent[2][2] = this.state.newTime[2];
     newContent[3][2] = this.state.newTime[3];
    var newMode = 0;
 
     this.setState({ content : newContent, mode : newMode });
+  }
+  cancelEdit() {
+    console.log("cancelEdit");
+    var revertTime = Object.assign({}, this.state.newTime);
+    revertTime[0] = this.state.content[0][2];
+    revertTime[1] = this.state.content[1][2];
+  //  revertTime[2] = this.state.content[2][2];
+    revertTime[3] = this.state.content[3][2];
+   var newMode = 0;
+
+    this.setState({ newTime : revertTime, mode : newMode });
   }
 
    renderInfo( ) {
@@ -211,14 +243,7 @@ class App extends Component {
           For the inverted brewing method
           </p>
         </header>
-        <form onSubmit={this.editTime}>
-        <input type="number" name="0" min="0" value={this.state.newTime[0]}  onChange={this.handleChange}/>
-        <input type="number" name="1" min="0" value={this.state.newTime[1]}  onChange={this.handleChange}/>
-        <input type="number" name="2" min="0" value={this.state.newTime[2]}  onChange={this.handleChange}/>
-        <input type="number" name="3" min="0" value={this.state.newTime[3]}  onChange={this.handleChange}/>
-        <button type="submit" value="Submit" className="App-button">Save</button>
-        </form>
-
+        <Edit editTime = {this.editTime} handleChange={this.handleChange} cancelEdit = {this.cancelEdit} newTime = {this.state.newTime} Content = {this.state.content}></Edit>
         </div>
       );
 

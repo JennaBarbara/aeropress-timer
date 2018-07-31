@@ -16,7 +16,7 @@
 }
 
 .App-title {
-  font-size: 1.5em;
+  font-size: 2.5em;
 }
 
 .App-intro {
@@ -36,13 +36,30 @@
    text-align: center;
    text-decoration: none;
    display: inline-block;
+   width: 200px;
    font-size: large;
    margin: 2px 8px;
    cursor: pointer;
    border-radius: 15px;
  }
-
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
+ .App-input{
+   text-align: center;
+   text-decoration: none;
+   font-size: large;
+   margin: 2px 8px;
+   cursor: pointer;
+   border-radius: 10px;
+ }
+ .App-timer{
+   background-color: #AAD7C1;
+   border: none;
+   color: white;
+   padding: 15px 32px;
+   text-align: center;
+   text-decoration: none;
+   display: inline-block;
+   width: 100px;
+   font-size: large;
+   margin: 2px 8px;
+   border-radius: 15px;
+ }
