@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+
 import './App.css';
+
+
+
+
+
 class Step extends Component {
 
   constructor(props) {
@@ -46,8 +51,7 @@ class Step extends Component {
     </p>
     <button onClick={this.props.Cancel} className="App-button">Cancel</button>
     {(this.state.currenttime>0)? <p className="App-timer">{this.state.currenttime}</p>: null}
-    {(this.state.currenttime==0)? <button onClick={this.props.nextMode} className="App-button">Next</button> : null}
-
+    {(this.state.currenttime===0)? <button onClick={this.props.nextMode} className="App-button">Next</button> : null}
     </div>
   );
 
@@ -102,7 +106,7 @@ class Info extends Component {
 class Edit extends Component {
   render() {
   return(
-    <form onSubmit={this.props.editTime}>
+    <form className="App-infotext" onSubmit={this.props.editTime}>
     <label>{this.props.Content[0][0]} time (in seconds): </label>
     <input type="number" name="0" min="0" value={this.props.newTime[0]} onChange={this.props.handleChange} className="App-input" /><br/>
     <label>{this.props.Content[1][0]} time (in seconds): </label>
@@ -110,7 +114,7 @@ class Edit extends Component {
     <label>{this.props.Content[3][0]} time (in seconds): </label>
     <input type="number" name="3" min="0" value={this.props.newTime[3]}  onChange={this.props.handleChange} className="App-input" /><br/><br/>
     <button onClick={this.props.cancelEdit} type="button" className="App-button">Cancel</button>
-    <input type="submit" value="Save" className="App-button"/>
+    <button type="submit" value="Save" className="App-button">Save</button>
 
     </form>
 
@@ -129,7 +133,7 @@ class App extends Component {
            "Pour enough water to cover your grinds (about 34g) and stir until the timer is up.",
            20],
           ["Pour",
-           "Pour in the remaining water and let sit until the timer is up.",
+           "Pour in the remaining water (about 236g) and let sit until the timer is up.",
            60],
           ["Flip",
            "Screw in the fliter to your Aeropress and place your cup on top. Carefully flip the entire arrangement.", 0
@@ -150,6 +154,7 @@ class App extends Component {
   this.Cancel = this.Cancel.bind(this);
    this.handleChange = this.handleChange.bind(this);
   }
+
   handleChange(event) {
     console.log("handleChange");
     var changeHandler = Object.assign({}, this.state.newTime);
@@ -181,7 +186,7 @@ class App extends Component {
      else if(this.state.mode > 0){
        return this.renderPrime( );
      }
-     else if(this.state.mode=="edit"){
+     else if(this.state.mode==="edit"){
        return this.renderEdit();
      }
    }
@@ -208,15 +213,18 @@ class App extends Component {
     this.setState({ newTime : revertTime, mode : newMode });
   }
 
+  pageHeader() {
+    return(
+      <header className="App-header">
+        <h1 className="App-title">Aeropress Timer</h1>
+        <p className="App-intro">For the inverted brewing method</p>
+      </header> )
+    }
+
    renderInfo( ) {
    return(
      <div className="App">
-       <header className="App-header">
-         <h1 className="App-title">Aeropress Timer</h1>
-         <p className="App-intro">
-          For the inverted brewing method
-         </p>
-       </header>
+       {this.pageHeader()}
        <Info editMode={this.editMode} nextMode={this.nextMode} Content = {this.state.content}></Info>
       </div>
      );
@@ -224,12 +232,7 @@ class App extends Component {
    renderPrime() {
         return(
           <div className="App">
-            <header className="App-header">
-              <h1 className="App-title">Aeropress Timer</h1>
-              <p className="App-intro">
-               For the inverted brewing method
-              </p>
-            </header>
+            {this.pageHeader()}
             <Step Cancel = {this.Cancel} nextMode={this.nextMode} Mode ={this.state.mode} Content = {this.state.content}></Step>
            </div>
           );
@@ -237,12 +240,7 @@ class App extends Component {
   renderEdit() {
       return(
       <div className="App">
-        <header className="App-header">
-          <h1 className="App-title">Aeropress Timer</h1>
-          <p className="App-intro">
-          For the inverted brewing method
-          </p>
-        </header>
+        {this.pageHeader()}
         <Edit editTime = {this.editTime} handleChange={this.handleChange} cancelEdit = {this.cancelEdit} newTime = {this.state.newTime} Content = {this.state.content}></Edit>
         </div>
       );
