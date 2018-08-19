@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 
 import './App.css';
 
-
+var audio = new Audio("/Electronic_Chime-KevanGC-495939803.mp3");
+audio.volume = 0.5;
 
 
 
@@ -25,6 +26,7 @@ class Step extends Component {
    }
 
    componentDidMount() {
+
      this.startTimer();
   }
   startTimer(){
@@ -38,20 +40,25 @@ class Step extends Component {
    }
    else{
       clearInterval(this.timerInterval);
+      audio.play();
    }
 
    }
   render() {
-    return( <div  className="App-infotext">
+    return(
+    <div  className="App-infotext">
+
     <p>
     <b>{this.props.Content[this.props.Mode-1][0]}</b>
     </p>
     <p>
      {this.props.Content[this.props.Mode-1][1]}
     </p>
+<div className="App-button-section">
     <button onClick={this.props.Cancel} className="App-button">Cancel</button>
     {(this.state.currenttime>0)? <p className="App-timer">{this.state.currenttime}</p>: null}
     {(this.state.currenttime===0)? <button onClick={this.props.nextMode} className="App-button">Next</button> : null}
+    </div>
     </div>
   );
 
@@ -62,12 +69,16 @@ class Info extends Component {
 
   render() {
   return(   <div  className="App-infotext">
+         <h2>Before you start</h2>
          <p>
-          Before you start, prepare 17g of fine ground coffee and 270g of near-boiling water. Wet your paper filter to remove any "papery" flavour.
-          Insert the plunger into the Aeropress and place it on a stable surface filter-side up. Add the coffee grounds into the Aeropress well.
+          Prepare 17g of fine ground coffee and 270g of near-boiling water. Wet your filter to remove any "papery" flavour.
+          Insert the plunger into the Aeropress and place it on a stable surface filter-side up. Add the coffee grounds into the Aeropress well. Click "Start" to begin the rest of the process.
          </p>
+         <div className="App-button-section">
          <button onClick={this.props.nextMode} className="App-button">Start</button>
          <button onClick={this.props.editMode} className="App-button">Edit</button>
+         </div>
+         <h2>Steps to making your cup</h2>
          <p>
          <b>{this.props.Content[0][0]}</b>
          </p>
@@ -106,7 +117,8 @@ class Info extends Component {
 class Edit extends Component {
   render() {
   return(
-    <form className="App-infotext" onSubmit={this.props.editTime}>
+
+    <div className="App-button-section" >
     <label>{this.props.Content[0][0]} time (in seconds): </label>
     <input type="number" name="0" min="0" value={this.props.newTime[0]} onChange={this.props.handleChange} className="App-input" /><br/>
     <label>{this.props.Content[1][0]} time (in seconds): </label>
@@ -114,10 +126,8 @@ class Edit extends Component {
     <label>{this.props.Content[3][0]} time (in seconds): </label>
     <input type="number" name="3" min="0" value={this.props.newTime[3]}  onChange={this.props.handleChange} className="App-input" /><br/><br/>
     <button onClick={this.props.cancelEdit} type="button" className="App-button">Cancel</button>
-    <button type="submit" value="Save" className="App-button">Save</button>
-
-    </form>
-
+    <button onClick={this.props.editTime} type="submit" value="Submit" className="App-button">Save</button>
+    </div>
   )
 }
 
@@ -156,7 +166,6 @@ class App extends Component {
   }
 
   handleChange(event) {
-    console.log("handleChange");
     var changeHandler = Object.assign({}, this.state.newTime);
     changeHandler[[event.target.name]] = event.target.value;
     this.setState({newTime : changeHandler});
@@ -191,7 +200,6 @@ class App extends Component {
      }
    }
   editTime() {
-    console.log("editTime");
     var newContent = Object.assign({}, this.state.content);
     newContent[0][2] = this.state.newTime[0];
     newContent[1][2] = this.state.newTime[1];
@@ -202,7 +210,6 @@ class App extends Component {
     this.setState({ content : newContent, mode : newMode });
   }
   cancelEdit() {
-    console.log("cancelEdit");
     var revertTime = Object.assign({}, this.state.newTime);
     revertTime[0] = this.state.content[0][2];
     revertTime[1] = this.state.content[1][2];
